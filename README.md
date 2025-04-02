@@ -72,3 +72,26 @@ The `net` schema has two tables:
 - You can customize some Postgres settings, such as `max_parallel_workers` using the [Supabase CLI](https://supabase.com/docs/guides/database/custom-postgres-config#cli-configurable-settings)
 - Testing different values of X
 - Running on different [instance sizes](https://supabase.com/docs/guides/platform/compute-and-disk)
+
+## Running
+
+There are multiple ways to run through these scenarios.
+
+### Scripting
+
+Using the `scripts` folder, you can apply each scenario using `psql`, running for a period of time and then stopping it with `drop_jobs.sql`. For example:
+
+    - `psql "$CONN_STRING" -f scripts/2_many_crons_one_function.sql`
+    - leave to run for X minutes
+    - `psql "$CONN_STRING" -f scripts/drop_jobs.sql`
+    - `psql "$CONN_STRING" -f scripts/get_job_details.sql`
+
+### Branching
+
+Each scenario can be created as a separate branch within a Supabase project. Follow the [Branching](https://supabase.com/docs/guides/deployment/branching) guide first and integrate with your github repo. For each branch, you will then need to add the scenario script as a migration. For example:
+
+    - `git checkout -b scenario/many_crons`
+    - `supabase migrations new many_crons`
+    - copy `scripts/1_many_crons.sql` into the new migration file
+    - commit the file and push, then open a new PR
+    - repeeat for each scenario and close the PRs when the tests are run.
